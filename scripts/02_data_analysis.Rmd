@@ -1,0 +1,249 @@
+---
+title: "Data Analysis"
+author: "Spiro Stilianoudakis"
+date: "9/13/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading Libraries
+
+```{r}
+library(openxlsx)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(reshape2)
+library(sas7bdat)
+library(lubridate)
+library(tidyr)
+library(tableone)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+```
+
+# Set working directory
+
+```{r}
+setwd("C:/Users/stili/Documents/PAT_project/data")
+```
+
+# Reading in data
+
+```{r}
+pat_data <- readRDS("C:/Users/stili/Documents/PAT_project/data/pat_data.rds")
+```
+
+# Data Analysis
+
+## Is there a difference in sex regarding PAT score
+
+```{r}
+ggplot(pat_data, aes(x=Sex, y = PAT, fill=Sex))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    geom_signif(test = "t.test", 
+                comparisons = list(c("Female", "Male")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw()
+
+summary(lm(PAT ~ Sex, data=pat_data))
+
+```
+
+
+## Is there a difference in sex regarding TES score
+
+```{r}
+ggplot(pat_data, aes(x=Sex, y = TES, fill=Sex))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    geom_signif(test = "wilcox.test", 
+                comparisons = list(c("Female", "Male")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw()
+
+summary(lm(TES ~ Sex, data=pat_data))
+
+```
+
+
+## Is there a difference in ethnicity regarding PAT score
+
+```{r}
+#pat_data$Ethnicity[which(pat_data$Ethnicity=="Black" |
+#                           pat_data$Ethnicity=="Other")] <- "Other"
+#table(pat_data$Ethnicit)
+
+#pat_data$Ethnicity <- factor(pat_data$Ethnicity, levels=c("White", "Asian", "Other"))
+
+ethnicity_dat <- pat_data[-which(pat_data$Ethnicity=="Unknown"),]
+ethnicity_dat$Ethnicity <- factor(ethnicity_dat$Ethnicity, levels=c("White", "African American", "Asian", "Hispanic", "Middle Eastern"))
+
+ggplot(ethnicity_dat, aes(x=Ethnicity, y = PAT, fill=Ethnicity))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    geom_signif(test = "t.test", 
+                comparisons = list(c("White", "African American"),
+                                   c("White", "Asian"),
+                                   c("White", "Hispanic"),
+                                   c("White", "Middle Eastern"),
+                                   c("African American", "Asian"),
+                                   c("African American", "Hispanic"),
+                                   c("African American", "Middle Eastern"),
+                                   c("Asian", "Hispanic"),
+                                   c("Asian", "Middle Eastern"),
+                                   c("Hispanic", "Middle Eastern")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw() +
+    theme(axis.text.x = element_text(size=15,
+                                     angle = 45,
+                                     hjust = 1),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+summary(lm(PAT ~ Ethnicity, data=ethnicity_dat))
+```
+
+
+## Is there a difference in ethnicity regarding TES score
+
+```{r}
+ggplot(ethnicity_dat, aes(x=Ethnicity, y = TES, fill=Ethnicity))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    geom_signif(test = "t.test", 
+                comparisons = list(c("White", "African American"),
+                                   c("White", "Asian"),
+                                   c("White", "Hispanic"),
+                                   c("White", "Middle Eastern"),
+                                   c("African American", "Asian"),
+                                   c("African American", "Hispanic"),
+                                   c("African American", "Middle Eastern"),
+                                   c("Asian", "Hispanic"),
+                                   c("Asian", "Middle Eastern"),
+                                   c("Hispanic", "Middle Eastern")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw() +
+    theme(axis.text.x = element_text(size=15,
+                                     angle = 45,
+                                     hjust = 1),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+
+summary(lm(TES ~ Ethnicity, data=ethnicity_dat))
+```
+
+
+## Does higher PAT correlate with lower TES (better performance on FM-100)
+
+```{r}
+cor(pat_data$TES, pat_data$PAT, method = "spearman")
+cor.test(pat_data$TES, pat_data$PAT, method = "spearman")
+
+grob1 = grobTree(textGrob(paste("Spearman Correlation : ", -0.209 ), x = 0.70, y = 0.90, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+grob2 = grobTree(textGrob(paste("p-value : ", "0.0003" ), x = 0.70, y = 0.85, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+ggplot(pat_data,aes(PAT,TES)) + 
+  geom_point() +
+  #geom_smooth(method='lm',formula=y~x) +
+  geom_smooth(method='loess') +
+  xlab("PAT Score") +
+  ylab("TES Score") +
+  theme_minimal()+
+  theme_bw()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20)) +
+  annotation_custom(grob1) +
+  annotation_custom(grob2) 
+  
+summary(lm(TES ~ PAT, data=pat_data))
+```
+
+
+## Is there a difference in age
+
+
+
+## Does time of completion correlate with better performance
+
+```{r}
+#continuous performance
+cor(pat_data$TES, pat_data$Time, method = "spearman")
+cor.test(pat_data$TES, pat_data$Time, method = "spearman")
+
+grob1 = grobTree(textGrob(paste("Spearman Correlation : ", -0.279 ), x = 0.70, y = 0.90, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+grob2 = grobTree(textGrob(paste("p-value : ", "< 0.0001" ), x = 0.70, y = 0.85, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+ggplot(pat_data,aes(TES,Time)) + 
+  geom_point() +
+  #geom_smooth(method='lm',formula=y~x) +
+  geom_smooth(method='loess') +
+  xlab("TES Score") +
+  ylab("Time to completion of FM-100 test") +
+  theme_minimal()+
+  theme_bw()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20)) +
+  annotation_custom(grob1) +
+  annotation_custom(grob2) 
+  
+summary(lm(Time ~ TES, data=pat_data))
+
+#categorical performance
+ggplot(pat_data, aes(x=Color.Acuity, y = Time, fill=Color.Acuity))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    xlab("Color Acuity") +
+    geom_signif(test = "wilcox.test", 
+                comparisons = list(c("Poor", "Average"),
+                                   c("Poor", "Superior"),
+                                   c("Superior", "Average")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw()
+
+summary(lm(Time ~ Color.Acuity, data=pat_data))
+```
+
+
+
+
+
