@@ -22,6 +22,7 @@ library(lubridate)
 library(tidyr)
 library(tableone)
 library(ggplot2)
+library(ggpubr)
 ```
 
 # Set working directory
@@ -51,9 +52,10 @@ summary(pat_data$Age)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  21.00   22.00   24.00   24.86   26.00   44.00 
 
-ggplot(pat_data, aes(x=Age)) +   
-   geom_histogram(aes(y=..density..), bins = 15) + 
-   geom_density(aes(y=..density..), color="red", size=1) +
+x <- ggplot(pat_data, aes(x=Age)) +   
+   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
+   geom_density(aes(y=..density..), color="black", size=1) +
+  xlab("") +
   ylab("Density") +
   theme_minimal() +
   theme_bw() +
@@ -61,6 +63,22 @@ ggplot(pat_data, aes(x=Age)) +
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20))
+
+y <- ggplot(pat_data, aes(x="",y=Age)) +   
+   geom_boxplot(color="black", fill="red") +
+  xlab("") +
+  ylab("") +
+  theme_minimal() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+f <- ggarrange(x,y, ncol = 2)
+annotate_figure(f, bottom = text_grob("Age", size=20))
+
+
 ```
 
 ## Sex
@@ -102,9 +120,10 @@ summary(pat_data$PAT)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  15.00   19.00   20.00   20.35   22.00   30.00 
 
-ggplot(pat_data, aes(x=PAT)) +   
-   geom_histogram(aes(y=..density..), bins = 15) + 
-   geom_density(aes(y=..density..), color="red", size=1) +
+x <- ggplot(pat_data, aes(x=PAT)) +   
+   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
+   geom_density(aes(y=..density..), color="black", size=1) +
+  xlab("") +
   ylab("Density") +
   theme_minimal() +
   theme_bw() +
@@ -112,6 +131,20 @@ ggplot(pat_data, aes(x=PAT)) +
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20))
+
+y <- ggplot(pat_data, aes(x="",y=PAT)) +   
+   geom_boxplot(color="black", fill="red") +
+  xlab("") +
+  ylab("") +
+  theme_minimal() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+f <- ggarrange(x,y, ncol = 2)
+annotate_figure(f, bottom = text_grob("PAT", size=20))
 ```
 
 ## Ethnicity
@@ -192,9 +225,10 @@ summary(pat_data$TES)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #   0.00    8.00   20.00   27.32   32.00  224.00 
 
-ggplot(pat_data, aes(x=TES)) +   
-   geom_histogram(aes(y=..density..), bins = 15) + 
-   geom_density(aes(y=..density..), color="red", size=1) +
+x <- ggplot(pat_data, aes(x=TES)) +   
+   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
+   geom_density(aes(y=..density..), color="black", size=1) +
+  xlab("") +
   ylab("Density") +
   theme_minimal() +
   theme_bw() +
@@ -202,6 +236,20 @@ ggplot(pat_data, aes(x=TES)) +
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20))
+
+y <- ggplot(pat_data, aes(x="",y=TES)) +   
+   geom_boxplot(color="black", fill="red") +
+  xlab("") +
+  ylab("") +
+  theme_minimal() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+f <- ggarrange(x,y, ncol = 2)
+annotate_figure(f, bottom = text_grob("TES", size=20))
 ```
 
 ## Time
@@ -211,10 +259,10 @@ summary(pat_data$Time)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  3.670   7.255   8.400   8.984  10.000  25.200 
 
-ggplot(pat_data, aes(x=Time)) +   
-   geom_histogram(aes(y=..density..), bins = 15) + 
-   geom_density(aes(y=..density..), color="red", size=1) +
-  xlab("Time of completion of FM-100 test (minutes)")+
+x <- ggplot(pat_data, aes(x=Time)) +   
+   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
+   geom_density(aes(y=..density..), color="black", size=1) +
+  xlab("")+
   ylab("Density") +
   theme_minimal() +
   theme_bw() +
@@ -222,6 +270,20 @@ ggplot(pat_data, aes(x=Time)) +
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20))
+
+y <- ggplot(pat_data, aes(x="",y=Time)) +   
+   geom_boxplot(color="black", fill="red") +
+  xlab("") +
+  ylab("") +
+  theme_minimal() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+f <- ggarrange(x,y, ncol = 2)
+annotate_figure(f, bottom = text_grob("Time of completion of FM-100 test (minutes)", size=20))
 ```
 
 ## Color Acuity
