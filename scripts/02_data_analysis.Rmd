@@ -143,16 +143,10 @@ summary(lm(PAT ~ Ethnicity, data=ethnicity_dat))
 ggplot(ethnicity_dat, aes(x=Ethnicity, y = TES, fill=Ethnicity))  + 
     stat_boxplot(geom ='errorbar', width = 0.2) + 
     geom_boxplot() +
-    geom_signif(test = "t.test", 
-                comparisons = list(c("White", "African American"),
-                                   c("White", "Asian"),
-                                   c("White", "Hispanic"),
-                                   c("White", "Middle Eastern"),
-                                   c("African American", "Asian"),
+    geom_signif(test = "wilcox.test", 
+                comparisons = list(c("White", "Asian"),
                                    c("African American", "Hispanic"),
                                    c("African American", "Middle Eastern"),
-                                   c("Asian", "Hispanic"),
-                                   c("Asian", "Middle Eastern"),
                                    c("Hispanic", "Middle Eastern")),
                 vjust = 0,
                 textsize = 4,

@@ -51,12 +51,13 @@ str(pat_data)
 summary(pat_data$Age)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  21.00   22.00   24.00   24.86   26.00   44.00 
+sd(pat_data$Age)
 
 x <- ggplot(pat_data, aes(x=Age)) +   
-   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
-   geom_density(aes(y=..density..), color="black", size=1) +
+   geom_histogram(bins = 15, color="black", fill="red") + 
+   #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Density") +
+  ylab("Number of Patients") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -102,9 +103,10 @@ pat_data %>%
     mutate(percent = count/sum(count)) %>% 
     ggplot(aes(x=Sex, y=count, fill=Sex)) +
     geom_col() +
-    geom_text(aes(label = paste0(round(100 * percent, 1), "%")), vjust = -.5, size=5)+
+    #geom_text(aes(label = paste0(round(100 * percent, 1), "%")), vjust = -.5, size=5)+
+    geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Sex") + 
-    ylab("Count")+
+    ylab("Number of Patients")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size = 15),
@@ -119,12 +121,13 @@ pat_data %>%
 summary(pat_data$PAT)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  15.00   19.00   20.00   20.35   22.00   30.00 
+sd(pat_data$PAT)
 
 x <- ggplot(pat_data, aes(x=PAT)) +   
-   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
-   geom_density(aes(y=..density..), color="black", size=1) +
+   geom_histogram(bins = 15, color="black", fill="red") + 
+   #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Density") +
+  ylab("Number of Patients") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -196,6 +199,8 @@ pat_data$Ethnicity[which(pat_data$Ethnicity=="Caucasian" |
                            pat_data$Ethnicity=="White")] <- "White"
 
 table(pat_data$Ethnicity, exclude = "ifany")
+#           White African American            Asian         Hispanic   Middle Eastern          Unknown 
+#             149               14               89               17               19                3 
 
 pat_data$Ethnicity <- factor(pat_data$Ethnicity, levels=c("White", "African American", "Asian", "Hispanic", "Middle Eastern", "Unknown"))
 
@@ -205,9 +210,9 @@ pat_data %>%
     mutate(percent = count/sum(count)) %>% 
     ggplot(aes(x=Ethnicity, y=count, fill=Ethnicity)) +
     geom_col() +
-    geom_text(aes(label = paste0(round(100 * percent, 1), "%")), vjust = -.5, size=5)+
+    geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Ethnicity") + 
-    ylab("Count")+
+    ylab("Number of Patients")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size=15,
@@ -226,10 +231,10 @@ summary(pat_data$TES)
 #   0.00    8.00   20.00   27.32   32.00  224.00 
 
 x <- ggplot(pat_data, aes(x=TES)) +   
-   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
-   geom_density(aes(y=..density..), color="black", size=1) +
+   geom_histogram(bins = 15, color="black", fill="red") + 
+   #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Density") +
+  ylab("Number of Patients") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -260,10 +265,10 @@ summary(pat_data$Time)
 #  3.670   7.255   8.400   8.984  10.000  25.200 
 
 x <- ggplot(pat_data, aes(x=Time)) +   
-   geom_histogram(aes(y=..density..), bins = 15, color="black", fill="red") + 
-   geom_density(aes(y=..density..), color="black", size=1) +
+   geom_histogram(bins = 15, color="black", fill="red") + 
+   #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("")+
-  ylab("Density") +
+  ylab("Number of Patients") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -299,7 +304,7 @@ table(pat_data$Color.Acuity, exclude = "ifany")
 # Average     Poor Superior 
 #     151        8      132
 
-pat_data$Color.Acuity <- factor(pat_data$Color.Acuity, levels=c("Poor", "Average", "Superior"))
+pat_data$Color.Acuity <- factor(pat_data$Color.Acuity, levels=c("Superior", "Average", "Poor"))
 
 pat_data %>% 
     group_by(Color.Acuity) %>% 
@@ -307,9 +312,9 @@ pat_data %>%
     mutate(percent = count/sum(count)) %>% 
     ggplot(aes(x=Color.Acuity, y=count, fill=Color.Acuity)) +
     geom_col() +
-    geom_text(aes(label = paste0(round(100 * percent, 1), "%")), vjust = -.5, size=5)+
+    geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Color Acuity Score") + 
-    ylab("Count")+
+    ylab("Number of Patients")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size = 15),
