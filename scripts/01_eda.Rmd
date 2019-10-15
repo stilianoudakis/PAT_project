@@ -57,7 +57,7 @@ x <- ggplot(pat_data, aes(x=Age)) +
    geom_histogram(bins = 15, color="black", fill="red") + 
    #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Number of Patients") +
+  ylab("Number of Subjects") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -106,7 +106,7 @@ pat_data %>%
     #geom_text(aes(label = paste0(round(100 * percent, 1), "%")), vjust = -.5, size=5)+
     geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Sex") + 
-    ylab("Number of Patients")+
+    ylab("Number of Subject")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size = 15),
@@ -127,7 +127,7 @@ x <- ggplot(pat_data, aes(x=PAT)) +
    geom_histogram(bins = 15, color="black", fill="red") + 
    #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Number of Patients") +
+  ylab("Number of Subjects") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -212,7 +212,7 @@ pat_data %>%
     geom_col() +
     geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Ethnicity") + 
-    ylab("Number of Patients")+
+    ylab("Number of Subjects")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size=15,
@@ -234,7 +234,7 @@ x <- ggplot(pat_data, aes(x=TES)) +
    geom_histogram(bins = 15, color="black", fill="red") + 
    #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("") +
-  ylab("Number of Patients") +
+  ylab("Number of Subjects") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -268,7 +268,7 @@ x <- ggplot(pat_data, aes(x=Time)) +
    geom_histogram(bins = 15, color="black", fill="red") + 
    #geom_density(aes(y=..density..), color="black", size=1) +
   xlab("")+
-  ylab("Number of Patients") +
+  ylab("Number of Subjects") +
   theme_minimal() +
   theme_bw() +
   theme(axis.text.x = element_text(size = 15),
@@ -314,7 +314,7 @@ pat_data %>%
     geom_col() +
     geom_text(aes(label = count), vjust = -.5, size=5)+
     xlab("Color Acuity Score") + 
-    ylab("Number of Patients")+
+    ylab("Number of Subjects")+
     guides(fill=FALSE)+
     theme_bw()+
     theme(axis.text.x = element_text(size = 15),
