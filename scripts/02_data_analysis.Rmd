@@ -197,9 +197,56 @@ summary(lm(TES ~ PAT, data=pat_data))
 ```
 
 
-## Is there a difference in age
+## Does age correlate with better performance
 
+```{r}
+cor(pat_data$Age, pat_data$TES, method = "spearman")
+cor.test(pat_data$Age, pat_data$TES, method = "spearman")
 
+grob1 = grobTree(textGrob(paste("Spearman Correlation : ", 0.125 ), x = 0.50, y = 0.90, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+grob2 = grobTree(textGrob(paste("p-value : ", "0.033" ), x = 0.50, y = 0.85, hjust = 0, gp = gpar(col = "red", fontsize = 20)))
+
+#continuous
+ggplot(pat_data,aes(Age,TES)) + 
+  geom_point() +
+  #geom_smooth(method='lm',formula=y~x) +
+  geom_smooth(method='loess') +
+  xlab("Subject Age") +
+  ylab("TES") +
+  theme_minimal()+
+  theme_bw()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20)) +
+  annotation_custom(grob1) +
+  annotation_custom(grob2) 
+
+#categorical
+ggplot(pat_data, aes(x=Color.Acuity, y = Age, fill=Color.Acuity))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    ylab("Subject Age") +
+    xlab("Color Acuity") +
+    guides(fill=FALSE) +
+    geom_signif(test = "wilcox.test", 
+                comparisons = list(c("Poor", "Average"),
+                                   c("Poor", "Superior"),
+                                   c("Superior", "Average")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw() +
+    theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+```
 
 ## Does time of completion correlate with better performance
 
