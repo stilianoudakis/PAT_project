@@ -1,0 +1,85 @@
+---
+title: "Modelling"
+author: "Spiro Stilianoudakis"
+date: "11/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading Libraries
+
+```{r}
+library(openxlsx)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(reshape2)
+library(sas7bdat)
+library(lubridate)
+library(tidyr)
+library(tableone)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(car)
+library(MASS)
+library(tableone)
+```
+
+# Set working directory
+
+```{r}
+setwd("C:/Users/stili/Documents/PAT_project/data")
+```
+
+# Reading in data
+
+```{r}
+pat_data <- readRDS("C:/Users/stili/Documents/PAT_project/data/pat_data.rds")
+```
+
+# Cleaning 
+
+```{r}
+pat_data$Ethnicity <- as.character(pat_data$Ethnicity)
+pat_data$Ethnicity[which(pat_data$Ethnicity=="African American" |
+                           pat_data$Ethnicity=="Hispanic" |
+                           pat_data$Ethnicity=="Middle Eastern" |
+                           pat_data$Ethnicity=="Unknown")] <- "Other"
+pat_data$Ethnicity <- factor(pat_data$Ethnicity, levels=c("White",
+                                                          "Asian",
+                                                          "Other"))
+table(pat_data$Ethnicity)
+
+pat_data$Sex <- factor(pat_data$Sex)
+
+pat_data$Color.Acuity2 <- factor(ifelse(pat_data$Color.Acuity=="Superior", "0-16", ">16"), levels=c(">16", "0-16"))
+table(pat_data$Color.Acuity2)
+
+pat_data$logTES <- log(pat_data$TES+1)
+```
+
+# Table 1
+
+```{r}
+CreateTableOne(c("Age", "Sex", "Ethnicity", 'TES', "Color.Acuity2", "Time", "PAT"), 
+               data=pat_data)
+```
+
+# Modelling PAT 
+
+```{r}
+model1 <- lm(PAT ~ Age + Sex + Ethnicity + logTES + Time,
+             data=pat_data)
+summary(model1)
+round(confint(model1),2)
+paste0(round(coef(model1),2), " ", "(", round(confint(model1),2)[,1], ",", round(confint(model1),2)[,2], ")")
+
+a1<-aov(PAT ~ Color.Acuity2, data=pat_data)
+TukeyHSD(a1)
+
+```
+
