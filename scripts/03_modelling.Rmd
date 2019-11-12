@@ -72,14 +72,39 @@ CreateTableOne(c("Age", "Sex", "Ethnicity", 'TES', "Color.Acuity2", "Time", "PAT
 # Modelling PAT 
 
 ```{r}
-model1 <- lm(PAT ~ Age + Sex + Ethnicity + logTES + Time,
+model1 <- lm(logTES ~ PAT + Age + Sex + Ethnicity + Time,
              data=pat_data)
 summary(model1)
 round(confint(model1),2)
 paste0(round(coef(model1),2), " ", "(", round(confint(model1),2)[,1], ",", round(confint(model1),2)[,2], ")")
 
+round((exp(coef(model1)) - 1) * 100,2)
+
+
 a1<-aov(PAT ~ Color.Acuity2, data=pat_data)
 TukeyHSD(a1)
+
+pat_data$Color.Acuity2 <-relevel(pat_data$Color.Acuity2,ref="0-16")
+pat_data$Color.Acuity2 <- factor(ifelse(pat_data$Color.Acuity2=="0-16", "Yes", "No"), levels = c("Yes", "No"))
+
+ggplot(pat_data, aes(x=Color.Acuity2, y = PAT, fill=Color.Acuity2))  + 
+    stat_boxplot(geom ='errorbar', width = 0.2) + 
+    geom_boxplot() +
+    xlab("Superior Color Acuity") +
+    guides(fill=FALSE) +
+    geom_signif(test = "t.test", 
+                comparisons = list(c("Yes", "No")),
+                vjust = 0,
+                textsize = 4,
+                size = .5,
+                step_increase = .08,
+                color="black") +
+    theme_minimal()+
+    theme_bw() +
+    theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
 
 ```
 
